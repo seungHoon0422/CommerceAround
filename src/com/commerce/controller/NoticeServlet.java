@@ -46,6 +46,10 @@ public class NoticeServlet extends HttpServlet {
 			path = moveList(request, response);
 			request.getRequestDispatcher(path).forward(request, response);
 			break;
+		case "shownotice":
+			path = showArticle(request, response);
+			request.getRequestDispatcher(path).forward(request, response);
+			break;
 		case "moveregister":
 			path = moveRegister(request);
 			response.sendRedirect(root + path);
@@ -75,6 +79,25 @@ public class NoticeServlet extends HttpServlet {
 		
 	}
 
+	private String showArticle(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
+		if(memberDto != null) {
+			NoticeDto noticeDto = new NoticeDto();
+			try {
+				noticeDto = noticeService.getArticle(Integer.parseInt(request.getParameter("articleno")));
+				request.setAttribute("article", noticeDto);
+				return "/notice/shownotice.jsp";
+			} catch (Exception e) {
+				e.printStackTrace();
+				request.setAttribute("msg", "글 수정중 에러가 발생했습니다.");
+				return "/error/error.jsp";
+			}
+		} else {			
+			return "/member?action=mvlogin";
+		}
+	}
+
 	private String deleteArticle(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
@@ -83,7 +106,6 @@ public class NoticeServlet extends HttpServlet {
 			
 			try {
 				noticeService.deleteArticle(articleNo);
-				
 				return "/notice?action=movenotice";
 			} catch (Exception e) {
 				e.printStackTrace();

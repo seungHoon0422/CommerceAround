@@ -77,7 +77,7 @@
 		<c:forEach var="article" items="${articles}">
               <tr>
                 <th scope="row">${article.articleNo}</th>
-                <td>${article.subject}</td>
+                <td><a href="${root}/notice?action=shownotice&articleno=${article.articleNo}">${article.subject}</a></td>
                 <td>${article.userId}</td>
                 <td>${article.regTime}</td>
               </tr>
