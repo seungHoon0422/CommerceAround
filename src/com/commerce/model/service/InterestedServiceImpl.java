@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.commerce.model.InterestedDto;
+import com.commerce.model.InterestedVo;
 import com.commerce.model.dao.InterestedDao;
 import com.commerce.model.dao.InterestedDaoImpl;
 import com.commerce.model.util.exception.DuplicatedEntityException;
@@ -23,14 +24,14 @@ public class InterestedServiceImpl implements InterestedService {
 	}
 	
 	@Override
-	public List<InterestedDto> getInterestedRegionList(String id)
+	public List<InterestedVo> getInterestedRegionList(String id)
 			throws SQLException, NotFoundEntityException, InvalidFormException {
 		
 		if (!checkId(id)) {
 			throw new InvalidFormException();
 		}
 		
-		List<InterestedDto> list = interestedDao.getInterestedRegionList(id);
+		List<InterestedVo> list = interestedDao.getInterestedRegionList(id);
 		if (list == null)//관심지역 등록 안한 경우
 			throw new NotFoundEntityException();
 		return list;

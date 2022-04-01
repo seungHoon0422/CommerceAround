@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.commerce.model.InterestedDto;
+import com.commerce.model.InterestedVo;
 import com.commerce.model.MemberDto;
 import com.commerce.model.service.InterestedService;
 import com.commerce.model.service.InterestedServiceImpl;
 import com.commerce.model.util.exception.DuplicatedEntityException;
 import com.commerce.model.util.exception.NotFoundEntityException;
+import com.google.gson.Gson;
 
 @WebServlet("/interested")
 public class InterestedServlet extends HttpServlet {
@@ -99,7 +100,7 @@ public class InterestedServlet extends HttpServlet {
 		String largeCode = request.getParameter("largeCode");
 		String path = "/commerce?action=main" + "&dong=" + dongCode 
 				+ "&large=" + largeCode;
-		System.out.println("check: "+dongCode + " " + largeCode);
+
 		try {
 			interestedService.registRegion(id, dongCode, largeCode);
 		} catch (DuplicatedEntityException e) {
@@ -117,11 +118,11 @@ public class InterestedServlet extends HttpServlet {
 	private void deleteRegion(String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String dongCode = request.getParameter("dongCode");
-		String middleCode = request.getParameter("middleCode");
-		String path = "/commerce?action=main&dongCode=" + dongCode + "&largeCode=" + middleCode.charAt(0);
+		String largeCode = request.getParameter("largeCode");
+		String path = "/commerce?action=main&dongCode=" + dongCode + "&largeCode=" + largeCode;
 		
 		try {
-			interestedService.deleteInterestedRegion(id, dongCode, middleCode);
+			interestedService.deleteInterestedRegion(id, dongCode, largeCode);
 			response.sendRedirect(root + path);
 		} catch (NotFoundEntityException e) {
 			e.printStackTrace();
@@ -136,11 +137,18 @@ public class InterestedServlet extends HttpServlet {
 
 	private void listRegion(String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String path = "";//관심지역 페이지 url로 변경!!
+		String dongCode = request.getParameter("dongCode");
+		String largeCode = request.getParameter("largeCode");
+		String path = "/commerce?action=main" + "&dong=" + dongCode 
+				+ "&large=" + largeCode;
 		
 		try {
-			List<InterestedDto> list = interestedService.getInterestedRegionList(id);
+			List<InterestedVo> list = interestedService.getInterestedRegionList(id);
 			request.setAttribute("interestedList", list);
+			Gson gson = new Gson();
+			String listJson = gson.toJson(list, List.class).toString();
+			response.getWriter().append(listJson);
+			return;
 		} catch (NotFoundEntityException e) {
 			e.printStackTrace();
 			request.setAttribute("msg", "관심 지역이 없습니다.");

@@ -38,11 +38,13 @@ $(function () {
 			data: {
 				action : 'list',
 				id : '\${memberInfo}.id',
+				dongCode : '${dongCode}',
+				largeCode : '${largeCode}',
 			},
 			type: 'GET',
 			dataType: 'JSON',
 			success: function (response) {
-				//showInterestedList(response);
+				showInterestedList(response);
 			}
 		});
 	
@@ -142,26 +144,24 @@ $(function () {
 	}
 	
 	function showInterestedList(response) {
+		let interestedList = '';
 		let list = response;
 		
-		for(let i = 0; i < list.length(); i++) {
+		for(let i = 0; i < list.length; i++) {
         	let cur = list[i];
 
-	        let name = cur['name'];
-			let addr = cur['address'];
-			let floor = cur['floor'];
-			let smallName = cur['smallName'];
+	        let dongName = cur['dongName'];
+			let largeName = cur['largeName'];
 			
-			storeListInfo += `
+			interestedList += `
 			<tr>
-			    <td>\${name}</td>
-			    <td>\${addr}</td>
-			    <td>\${floor}</td>
-			    <td>\${smallName}</td>
+			    <td>\${dongName}</td>
+			    <td>\${largeName}</td>
+			    <td><input type="button" class="checkBtn" value="클릭" /></td>
 			</tr>
 			`;
         }
-        $("#storelist").empty().append(storeListInfo);
+        $("#interested-list").empty().append(interestedList);
         $("tr:first").css("background", "black").css("color", "white");
         $("tr:odd").css("background", "lightgray");
 	}
@@ -205,7 +205,7 @@ $(function () {
         }
         $("#storelist").empty().append(storeListInfo);
         $("tr:first").css("background", "black").css("color", "white");
-        $("tr:odd").css("background", "lightgray");
+        $("tr:odd").css("background", "#46FFFF");
     }
 
 	function makeMarker(data) {
@@ -420,8 +420,6 @@ $(function () {
 						</tr>
 					</tbody>
 				</table>
-				<div class="col-lg-12" id="ex2_Result1" ></div> 
-				<div class="col-lg-12" id="ex2_Result2" ></div> 
 			</div>
 		</div>
  	</div>

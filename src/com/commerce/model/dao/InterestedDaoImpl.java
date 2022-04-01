@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.commerce.model.InterestedDto;
+import com.commerce.model.InterestedVo;
 import com.commerce.model.util.DBUtil;
 import com.commerce.model.util.exception.DuplicatedEntityException;
 import com.commerce.model.util.exception.NotFoundEntityException;
@@ -27,12 +28,16 @@ public class InterestedDaoImpl implements InterestedDao {
 	}
 	
 	@Override
-	public List<InterestedDto> getInterestedRegionList(String id) throws SQLException {
+	public List<InterestedVo> getInterestedRegionList(String id) throws SQLException {
 		
-		List<InterestedDto> list = null;
+		List<InterestedVo> list = null;
 		
-		String sql = "SELECT * FROM interested "
-				+ "WHERE id=?";
+		String sql = "SELECT dongName, name largeName "
+				+ " FROM interested i join dong d "
+				+ " on d.dongCode = i.dongCode "
+				+ " join largesector l "
+				+ " on l.code = i.largeCode "
+				+ " where i.id = ?";
 		
 		try(Connection conn = dbUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -41,12 +46,11 @@ public class InterestedDaoImpl implements InterestedDao {
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				if (list == null)
-					list = new ArrayList<InterestedDto>();
-				InterestedDto interestedDto = new InterestedDto();
-				interestedDto.setId(rs.getString("id"));
-				interestedDto.setDongCode(rs.getString("dongCode"));
-				interestedDto.setLargeCode(rs.getString("largeCode"));
-				list.add(interestedDto);
+					list = new ArrayList<InterestedVo>();
+				InterestedVo interestedVo = new InterestedVo();
+				interestedVo.setDongName(rs.getString("dongName"));
+				interestedVo.setLargeName(rs.getString("largeName"));
+				list.add(interestedVo);
 			}
 			rs.close();
 		}
