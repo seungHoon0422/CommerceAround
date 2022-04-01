@@ -4,7 +4,7 @@
 <c:if test="${empty memberInfo}">
 	<script>
 	alert("로그인 사용자만 볼 수 있는 페이지입니다.");
-	location.href = "${root}/member?action=movelogin";
+	location.href = "${root}/member?action=mvlogin";
 	</script>
 </c:if>
 <c:if test="${!empty memberInfo}">
@@ -15,7 +15,7 @@
     </style>
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#registerBtn").click(function () {
+            $("#modifyBtn").click(function () {
                 if (!$("#subject").val()) {
                     alert("제목 입력!!!!");
                     return;
@@ -31,21 +31,20 @@
 
     <div class="container text-center mt-3">
         <div class="col-lg-8 mx-auto">
-      <div class="row col-lg-8 p-3 m-3 mx-auto justify-content-center">
-        <h2 class="text-info ">공지사항 작성</h2>
-      </div>
+            <h2 class="p-3 mb-3 shadow bg-light"><mark class="sky">글수정</mark></h2>
             <form id="writeform" class="text-left mb-3" method="post" action="">
-            	<input type="hidden" name="action" value="register" />
+            	<input type="hidden" name="action" value="modify" />
+            	<input type="hidden" name="articleno" value="${article.articleNo}" />
                 <div class="form-group">
                     <label for="subject">제목:</label>
-                    <input type="text" class="form-control" id="subject" name="subject" placeholder="제목...">
+                    <input type="text" class="form-control" id="subject" name="subject" value="${article.subject}" placeholder="제목...">
                 </div>
                 <div class="form-group">
                     <label for="content">내용:</label>
-                    <textarea class="form-control" rows="15" id="content" name="content"></textarea>
+                    <textarea class="form-control" rows="15" id="content" name="content">${article.content}</textarea>
                 </div>
                 <div class="text-center">
-                    <button type="button" id="registerBtn" class="btn btn-outline-primary">글작성</button>
+                    <button type="button" id="modifyBtn" class="btn btn-outline-primary">글수정</button>
                     <button type="reset" class="btn btn-outline-danger">초기화</button>
                 </div>
             </form>
