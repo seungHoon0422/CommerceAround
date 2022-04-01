@@ -4,16 +4,16 @@ public class InterestedDto {
 
 	private String id;
 	private String dongCode;
-	private String middleCode;
+	private String largeCode;
 	
 	public InterestedDto() {
 	}
 	
-	public InterestedDto(String id, String dongCode, String middleCode) {
+	public InterestedDto(String id, String dongCode, String largeCode) {
 		super();
 		this.id = id;
 		this.dongCode = dongCode;
-		this.middleCode = middleCode;
+		this.largeCode = largeCode;
 	}
 
 	public String getId() {
@@ -32,17 +32,17 @@ public class InterestedDto {
 		this.dongCode = dongCode;
 	}
 
-	public String getMiddleCode() {
-		return middleCode;
+	public String getLargeCode() {
+		return largeCode;
 	}
 
-	public void setMiddleCode(String middleCode) {
-		this.middleCode = middleCode;
+	public void setLargeCode(String largeCode) {
+		this.largeCode = largeCode;
 	}
 
 	@Override
 	public String toString() {
-		return "InterestedDto [id=" + id + ", dongCode=" + dongCode + ", middleCode=" + middleCode + "]";
+		return "InterestedDto [id=" + id + ", dongCode=" + dongCode + ", largeCode=" + largeCode + "]";
 	}
 	
 }

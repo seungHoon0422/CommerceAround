@@ -9,6 +9,15 @@
 	</script>
 </c:if>
 <script>
+	var isLogin = false;
+</script>
+<c:if test="${!empty memberInfo}">
+<script>
+	isLogin = true;
+</script>
+</c:if>
+<script>
+
 var map;
 var markers = []; //마커 제거를 위해 현재 마커들 저장해놓음
 var storeData;
@@ -19,7 +28,26 @@ const naviSize = 10;
 
 $(function () {
 	console.log("window loaded");
+
+	if (isLogin) {
+		console.log("flag!!");
+		$("#mapDiv").attr('class','container col-sm-8');
+		$("#tableDiv").attr('style', "display: ");
+		$.ajax({
+			url: '${root}/interested',
+			data: {
+				action : 'list',
+				id : '\${memberInfo}.id',
+			},
+			type: 'GET',
+			dataType: 'JSON',
+			success: function (response) {
+				//showInterestedList(response);
+			}
+		});
+	
 		
+	}
 		 //맵 생성
 	var container = document.getElementById("kmap");
 	var options = {
@@ -29,9 +57,16 @@ $(function () {
 	 
 	map = new kakao.maps.Map(container, options);
 	
+	//let interestedList = ${interestedList};
+	
+	//$("#interested-list")
+	
 	$(document).on("change", "#middle", function () {
 		let dongCode = '${dongCode}';
 		let middleCode = $("option:selected", this).val();
+		
+		/*[중분류 변경하면 관심등록 버튼 생성하는 부분]
+		----------------------------------------------------
 		let tag =` 
 			<input type="hidden" name="action" value="regist">
 			<input type="hidden" name="dongCode" value="\${dongCode}">
@@ -42,9 +77,14 @@ $(function () {
 		$(document).on("click", "#interested-btn", function () {
 			$("#interested-form").submit();
 		});
-		
+		-------------------------------------------------------*/
 		let pg = 1;
 		getData(dongCode, middleCode, pg);
+	});
+	
+	
+	$(document).on("click", "#interested-btn", function () {
+		$("#interested-form").submit();
 	});
 	
 	$(document).on("click", "#search-btn", function () {
@@ -101,6 +141,31 @@ $(function () {
 		});
 	}
 	
+	function showInterestedList(response) {
+		let list = response;
+		
+		for(let i = 0; i < list.length(); i++) {
+        	let cur = list[i];
+
+	        let name = cur['name'];
+			let addr = cur['address'];
+			let floor = cur['floor'];
+			let smallName = cur['smallName'];
+			
+			storeListInfo += `
+			<tr>
+			    <td>\${name}</td>
+			    <td>\${addr}</td>
+			    <td>\${floor}</td>
+			    <td>\${smallName}</td>
+			</tr>
+			`;
+        }
+        $("#storelist").empty().append(storeListInfo);
+        $("tr:first").css("background", "black").css("color", "white");
+        $("tr:odd").css("background", "lightgray");
+	}
+	
 	function makeList(curPageNo) {
 		/*
 		데이터는 서블릿에서 JSON으로 전부 받아오기
@@ -116,7 +181,7 @@ $(function () {
 		=> 종료 인덱스 = (현재페이지 - 1) * curr + naviSize (미만)
 			현재 2페이지 -> 10 ~ 19번
 		*/
-		let aptListInfo = '';
+		let storeListInfo = '';
 		let startIdx = (curPageNo - 1) * countPerPage;
 		let endIdx = startIdx + naviSize;
 		if (endIdx > totalData)
@@ -129,7 +194,7 @@ $(function () {
 			let floor = cur['floor'];
 			let smallName = cur['smallName'];
 			
-			aptListInfo += `
+			storeListInfo += `
 			<tr>
 			    <td>\${name}</td>
 			    <td>\${addr}</td>
@@ -138,7 +203,7 @@ $(function () {
 			</tr>
 			`;
         }
-        $("#storelist").empty().append(aptListInfo);
+        $("#storelist").empty().append(storeListInfo);
         $("tr:first").css("background", "black").css("color", "white");
         $("tr:odd").css("background", "lightgray");
     }
@@ -277,10 +342,11 @@ $(function () {
 					      </li>`;
 		$("#page-nav").empty().append(appendList);
 	}
-
 </script>
 
 <div class="container">
+	
+	<!-- 중분류 선택바, 검색 버튼 -->
 	<div class="row" >
 		<div class="col text-center mb-2" style=" width : auto; height : 200px;background-size : cover; background-image :
   url('https://ww.namu.la/s/dd28d29e650bff5a90776fda52187f6488962321db575dd030b0127bc4f5a4cea014119787459f2d3c5436e57b9f566e466ffcbaca7cd4fb4763a5b210cd94c4d2c1a0da69d83d9d3e39395881b0f06a3996f5f3099f1973e9b41e56a2fe7661');">
@@ -298,8 +364,12 @@ $(function () {
 			</select>
 		</div>
 		<div>
+		<!-- 관심지역 등록버튼 -->
 			<form class="form-inline" id="interested-form" action="${root}/interested">
-				
+				<input type="hidden" name="action" value="regist">
+				<input type="hidden" name="dongCode" value="${dongCode}">
+				<input type="hidden" name="largeCode" value="${largeCode}">
+				<button type="button" id="interested-btn" class="ml-1 btn btn-outline-primary">관심지역 등록</button>
 			</form>
 		</div>
 		<div class="m-3 row justify-content-end">
@@ -316,31 +386,64 @@ $(function () {
            	</form>
          </div>
 	</div>
-	<div class="row mt-5">
-		<div class="container">
-			<div id="kmap" style="width: 95%; height: 500px"></div>
-		    <div>
-		      <table class="table table-striped">
-		      
-		        <thead>
-		          <tr class="text-center">
-		            <th>상호명</th>
-		            <th>주소</th>
-		  	        <th>층</th>
-		            <th>업종소분류</th>
-		          </tr>
-		        </thead>
-		        <tbody id="storelist"></tbody>
-		      </table>
-		    </div>
-		    <div>
-		    	<ul id="page-nav" class="pagination">
-
-				</ul>
-		    </div>
+	
+	<!-- 지도, 관심지역 리스트 -->
+	<div class="row mt-3">
+		<div id="mapDiv" class="container col-sm-12">
+			<div id="kmap" style="height: 450px"></div>
+		</div>
+		<div id="tableDiv" class="container col-sm-4" style="display: none">
+			<div class="row">
+				<table id="example-table-2" width="100%" class="table table-bordered table-hover text-center">
+					<thead>
+						<tr>
+							<th>지역</th>
+							<th>업종</th>
+							<th>삭제</th>
+						</tr>
+					</thead>
+					<tbody id="interested-list">				
+						<tr>
+							<td>1</td>
+							<td>user04</td>
+							<td><input type="button" class="checkBtn" value="클릭" /></td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>Mercy@naver.com</td>
+							<td><input type="button" class="checkBtn" value="클릭" /></td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>trolling@gmail.com</td>
+							<td><input type="button" class="checkBtn" value="클릭" /></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="col-lg-12" id="ex2_Result1" ></div> 
+				<div class="col-lg-12" id="ex2_Result2" ></div> 
+			</div>
 		</div>
  	</div>
   		
+	<div class="row mt-5">
+      <table class="table table-striped">
+        <thead>
+          <tr class="text-center">
+            <th>상호명</th>
+            <th>주소</th>
+  	        <th>층</th>
+            <th>업종소분류</th>
+          </tr>
+        </thead>
+        <tbody id="storelist"></tbody>
+      </table>
+    </div>
+    <div>
+    	<ul id="page-nav" class="pagination">
+
+		</ul>
+    </div>
 </div>
 
 

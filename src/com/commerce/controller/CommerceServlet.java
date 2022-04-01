@@ -45,9 +45,6 @@ public class CommerceServlet extends HttpServlet {
 		switch (action) {
 		case "main":
 			path = moveMiddle(request);
-			System.out.println("F4");
-			System.out.println("realPath: " + path);
-			//왜 여기서 Dispatcher가 안되지??
 			request.getRequestDispatcher(path).forward(request, response);
 			break;
 		case "map":
@@ -89,21 +86,17 @@ public class CommerceServlet extends HttpServlet {
 		
 		request.setAttribute("dongCode", request.getParameter("dong"));
 		String largeCode = request.getParameter("large");
-		
-		System.out.println(request.getAttribute("dongCode") + " " + largeCode);
+		request.setAttribute("largeCode", largeCode);
 		
 		try {
 			List<CategoryDto> middleList = commerceService.getMiddleList(largeCode);
 			request.setAttribute("middleList", middleList);
-			System.out.println("F3");
 			return "/commerce/main.jsp";
 			
 		} catch (SQLException e) {
 			// middle list 못받아온 경우
 			e.printStackTrace();
-			System.out.println("F1");
 		}
-		System.out.println("F2");
 		return null;
 	}
 

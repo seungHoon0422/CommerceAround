@@ -24,10 +24,6 @@ public class NoticeDaoImpl implements NoticeDao {
 		return noticeDao;
 	}
 	
-	
-	
-	
-	
 	@Override
 	public void registerNotice(NoticeDto noticeDto) throws SQLException {
 		Connection conn = null;

@@ -19,7 +19,7 @@ public interface InterestedService {
 			throws SQLException, NotFoundEntityException, InvalidFormException;
 	
 	/** 관심지역 등록 */
-	void registRegion(String id, String dongCode, String middleCode) throws SQLException, InvalidFormException, DuplicatedEntityException;
+	void registRegion(String id, String dongCode, String largeCode) throws SQLException, InvalidFormException, DuplicatedEntityException;
 	
 	/** 관심지역 삭제 */
 	void deleteInterestedRegion(String id, String dongCode, String middleCode)

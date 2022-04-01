@@ -45,7 +45,7 @@ public class InterestedDaoImpl implements InterestedDao {
 				InterestedDto interestedDto = new InterestedDto();
 				interestedDto.setId(rs.getString("id"));
 				interestedDto.setDongCode(rs.getString("dongCode"));
-				interestedDto.setMiddleCode(rs.getString("middleCode"));
+				interestedDto.setLargeCode(rs.getString("largeCode"));
 				list.add(interestedDto);
 			}
 			rs.close();
@@ -58,20 +58,20 @@ public class InterestedDaoImpl implements InterestedDao {
 		InterestedDto ret = null;
 		
 		String sql = "SELECT * FROM interested "
-				+ "WHERE id=? AND dongCode=? AND middleCode=?";
+				+ "WHERE id=? AND dongCode=? AND largeCode=?";
 		
 		try(Connection conn = dbUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			
 			pstmt.setString(1, interestedDto.getId());
 			pstmt.setString(2, interestedDto.getDongCode());
-			pstmt.setString(3, interestedDto.getMiddleCode());
+			pstmt.setString(3, interestedDto.getLargeCode());
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				ret = new InterestedDto();
 				ret.setId(rs.getString("id"));
 				ret.setDongCode(rs.getString("dongCode"));
-				ret.setMiddleCode(rs.getString("middleCode"));
+				ret.setLargeCode(rs.getString("largeCode"));
 			} else {
 				throw new NotFoundEntityException();
 			}
@@ -85,20 +85,20 @@ public class InterestedDaoImpl implements InterestedDao {
 			throws SQLException, DuplicatedEntityException {
 		
 		int ret = 0;
-		String sql = "INSERT INTO interested (id, dongCode, middleCode) \n"
+		String sql = "INSERT INTO interested (id, dongCode, largeCode) \n"
 				+ " SELECT ?, ?, ? FROM DUAL WHERE NOT EXISTS \n"
-				+ " (SELECT id, dongCode, middleCode FROM interested \n" 
-				+ " WHERE id=? AND dongCode=? AND middleCode=?)";
+				+ " (SELECT id, dongCode, largeCode FROM interested \n" 
+				+ " WHERE id=? AND dongCode=? AND largeCode=?)";
 		
 		try(Connection conn = dbUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			
 			pstmt.setString(1, interestedDto.getId());
 			pstmt.setString(2, interestedDto.getDongCode());
-			pstmt.setString(3, interestedDto.getMiddleCode());
+			pstmt.setString(3, interestedDto.getLargeCode());
 			pstmt.setString(4, interestedDto.getId());
 			pstmt.setString(5, interestedDto.getDongCode());
-			pstmt.setString(6, interestedDto.getMiddleCode());
+			pstmt.setString(6, interestedDto.getLargeCode());
 			
 			ret = pstmt.executeUpdate();
 		}
@@ -110,14 +110,14 @@ public class InterestedDaoImpl implements InterestedDao {
 	public void deleteInterestedRegion(InterestedDto interestedDto) throws SQLException {
 
 		String sql = "DELETE FROM interested WHERE id=? AND dongCode=? "
-				+ " AND middleCode=?";
+				+ " AND largeCode=?";
 		
 		try(Connection conn = dbUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			
 			pstmt.setString(1, interestedDto.getId());
 			pstmt.setString(2, interestedDto.getDongCode());
-			pstmt.setString(3, interestedDto.getMiddleCode());
+			pstmt.setString(3, interestedDto.getLargeCode());
 			
 			pstmt.executeUpdate();
 		}

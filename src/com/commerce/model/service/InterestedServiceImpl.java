@@ -37,21 +37,21 @@ public class InterestedServiceImpl implements InterestedService {
 	}
 	
 	@Override
-	public InterestedDto getInterestedRegion(String id, String dongCode, String middleCode)
+	public InterestedDto getInterestedRegion(String id, String dongCode, String largeCode)
 			throws SQLException, NotFoundEntityException, InvalidFormException {
 		
 		if (!checkId(id)) {
 			throw new InvalidFormException();
 		} else if (dongCode == null || dongCode.equals("")) {
 			throw new InvalidFormException();
-		} else if (middleCode == null || middleCode.equals("")) {
+		} else if (largeCode == null || largeCode.equals("")) {
 			throw new InvalidFormException();
 		}
 		
 		InterestedDto interestedDto = new InterestedDto();
 		interestedDto.setId(id);
 		interestedDto.setDongCode(dongCode);
-		interestedDto.setMiddleCode(middleCode);
+		interestedDto.setLargeCode(largeCode);
 		
 		InterestedDto ret = interestedDao.getInterestedRegion(interestedDto);
 		if (ret == null)//관심지역 등록 안한 경우
@@ -60,41 +60,41 @@ public class InterestedServiceImpl implements InterestedService {
 	}
 
 	@Override
-	public void registRegion(String id, String dongCode, String middleCode)
+	public void registRegion(String id, String dongCode, String largeCode)
 			throws SQLException, InvalidFormException, DuplicatedEntityException {
 		//동코드, 미들코드 널인지, 아이디 유효한지 정도 체크
 		if (!checkId(id)) {
 			throw new InvalidFormException();
 		} else if (dongCode == null || dongCode.equals("")) {
 			throw new InvalidFormException();
-		} else if (middleCode == null || middleCode.equals("")) {
+		} else if (largeCode == null || largeCode.equals("")) {
 			throw new InvalidFormException();
 		}
 		
 		InterestedDto interestedDto = new InterestedDto();
 		interestedDto.setId(id);
 		interestedDto.setDongCode(dongCode);
-		interestedDto.setMiddleCode(middleCode);
+		interestedDto.setLargeCode(largeCode);
 		
 		interestedDao.registRegion(interestedDto);
 	}
 
 	@Override
-	public void deleteInterestedRegion(String id, String dongCode, String middleCode)
+	public void deleteInterestedRegion(String id, String dongCode, String largeCode)
 			throws SQLException, InvalidFormException, NotFoundEntityException {
 		
 		if (!checkId(id)) {
 			throw new InvalidFormException();
 		} else if (dongCode == null || dongCode.equals("")) {
 			throw new InvalidFormException();
-		} else if (middleCode == null || middleCode.equals("")) {
+		} else if (largeCode == null || largeCode.equals("")) {
 			throw new InvalidFormException();
 		}
 		
 		InterestedDto interestedDto = new InterestedDto();
 		interestedDto.setId(id);
 		interestedDto.setDongCode(dongCode);
-		interestedDto.setMiddleCode(middleCode);
+		interestedDto.setLargeCode(largeCode);
 		
 		interestedDao.deleteInterestedRegion(interestedDto);
 	}
