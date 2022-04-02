@@ -16,8 +16,15 @@
 	isLogin = true;
 </script>
 </c:if>
+<c:if test="${empty dongCode || empty largeCode}">
 <script>
+	alert("지역과 업종을 선택하세요.");
+	location.href = "${root}/member";
+</script>
+</c:if>
 
+
+<script>
 var map;
 var markers = []; //마커 제거를 위해 현재 마커들 저장해놓음
 var storeData;
@@ -45,9 +52,22 @@ $(function () {
 			dataType: 'JSON',
 			success: function (response) {
 				showInterestedList(response);
+			},
+			error : function () {
+				showInterestedList('');
 			}
 		});
-	
+		
+		/*
+		<tr class="interested-region" >
+			<input type="hidden" id="dong" name="dong" value="${dongCode}"/>
+			<input type="hidden" id="large" name="large" value="${largeCode}"/>
+		*/
+		$(document).on("click", ".interested-region", function () {
+			let dCode = $(this).children('#dong').val();
+			let lCode = $(this).children('#large').val();
+			location.href=`${root}/commerce?action=main&dong=\${dCode}&large=\${lCode}`;
+		});
 		
 	}
 		 //맵 생성
@@ -58,10 +78,6 @@ $(function () {
 	 	};
 	 
 	map = new kakao.maps.Map(container, options);
-	
-	//let interestedList = ${interestedList};
-	
-	//$("#interested-list")
 	
 	$(document).on("change", "#middle", function () {
 		let dongCode = '${dongCode}';
@@ -152,15 +168,23 @@ $(function () {
 
 	        let dongName = cur['dongName'];
 			let largeName = cur['largeName'];
+	        let doCode = cur['dongCode'];
+			let lCode = cur['largeCode'];
 			
 			interestedList += `
-			<tr>
+			<tr class="interested-region" >
+				<input type="hidden" id="dong" name="dong" value="\${doCode}"/>
+				<input type="hidden" id="large" name="large" value="\${lCode}"/>
 			    <td>\${dongName}</td>
 			    <td>\${largeName}</td>
 			    <td><input type="button" class="checkBtn" value="클릭" /></td>
 			</tr>
 			`;
         }
+		if (!interestedList){
+			interestedList += '<tr><td colspan="3">관심지역이 없습니다.</td></tr>';
+		}
+		
         $("#interested-list").empty().append(interestedList);
         $("tr:first").css("background", "black").css("color", "white");
         $("tr:odd").css("background", "lightgray");
@@ -403,21 +427,7 @@ $(function () {
 						</tr>
 					</thead>
 					<tbody id="interested-list">				
-						<tr>
-							<td>1</td>
-							<td>user04</td>
-							<td><input type="button" class="checkBtn" value="클릭" /></td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>Mercy@naver.com</td>
-							<td><input type="button" class="checkBtn" value="클릭" /></td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>trolling@gmail.com</td>
-							<td><input type="button" class="checkBtn" value="클릭" /></td>
-						</tr>
+						<!-- 관심지역 리스트 -->
 					</tbody>
 				</table>
 			</div>

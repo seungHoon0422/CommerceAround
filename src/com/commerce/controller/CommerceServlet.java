@@ -131,8 +131,8 @@ public class CommerceServlet extends HttpServlet {
 	private String getGugunList(HttpServletRequest request) {
 		try {
 			String regCode = request.getParameter("code");
-			System.out.println("code: " + regCode);
 			List<RegionDto> list = commerceService.getGugunList(regCode);
+			
 			Gson gson = new Gson();//자바객체를 JSON으로 변경해주는 객체(외부 jar파일 받았음)
 			String listJson = gson.toJson(list, List.class).toString();
 			return listJson;

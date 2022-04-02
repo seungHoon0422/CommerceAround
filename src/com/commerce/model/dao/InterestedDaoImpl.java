@@ -32,7 +32,7 @@ public class InterestedDaoImpl implements InterestedDao {
 		
 		List<InterestedVo> list = null;
 		
-		String sql = "SELECT dongName, name largeName "
+		String sql = "SELECT dongName, name largeName, i.dongCode, i.largeCode "
 				+ " FROM interested i join dong d "
 				+ " on d.dongCode = i.dongCode "
 				+ " join largesector l "
@@ -50,6 +50,8 @@ public class InterestedDaoImpl implements InterestedDao {
 				InterestedVo interestedVo = new InterestedVo();
 				interestedVo.setDongName(rs.getString("dongName"));
 				interestedVo.setLargeName(rs.getString("largeName"));
+				interestedVo.setDongCode(rs.getString("dongCode"));
+				interestedVo.setLargeCode(rs.getString("largeCode"));
 				list.add(interestedVo);
 			}
 			rs.close();

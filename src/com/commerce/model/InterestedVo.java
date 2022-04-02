@@ -4,14 +4,10 @@ public class InterestedVo {
 
 	private String dongName;
 	private String largeName;
+	private String dongCode;
+	private String largeCode;
 	
 	public InterestedVo() {
-	}
-
-	public InterestedVo(String dongName, String largeName) {
-		super();
-		this.dongName = dongName;
-		this.largeName = largeName;
 	}
 
 	public String getDongName() {
@@ -28,6 +24,22 @@ public class InterestedVo {
 
 	public void setLargeName(String largeName) {
 		this.largeName = largeName;
+	}
+
+	public String getDongCode() {
+		return dongCode;
+	}
+
+	public void setDongCode(String dongCode) {
+		this.dongCode = dongCode;
+	}
+
+	public String getLargeCode() {
+		return largeCode;
+	}
+
+	public void setLargeCode(String largeCode) {
+		this.largeCode = largeCode;
 	}
 
 	@Override
