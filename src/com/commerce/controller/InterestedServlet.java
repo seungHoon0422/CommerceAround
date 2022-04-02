@@ -119,17 +119,17 @@ public class InterestedServlet extends HttpServlet {
 
 		String dongCode = request.getParameter("dongCode");
 		String largeCode = request.getParameter("largeCode");
-		String path = "/commerce?action=main&dongCode=" + dongCode + "&largeCode=" + largeCode;
-		
+		String path = "/commerce?action=main&dong=" + dongCode
+				+ "&large=" + largeCode;
+
 		try {
 			interestedService.deleteInterestedRegion(id, dongCode, largeCode);
-			response.sendRedirect(root + path);
 		} catch (NotFoundEntityException e) {
 			e.printStackTrace();
 			request.setAttribute("msg", "삭제할 지역이 없습니다.");
 		} catch (Exception e) {
 			e.printStackTrace();
-			request.setAttribute("msg", "관심지역 등록 중 에러가 발생했습니다.");
+			request.setAttribute("msg", "관심지역 삭제 중 에러가 발생했습니다.");
 			path = "/error/error.jsp";
 		}
 		request.getRequestDispatcher(path).forward(request, response);

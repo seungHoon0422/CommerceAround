@@ -58,17 +58,19 @@ $(function () {
 			}
 		});
 		
-		/*
-		<tr class="interested-region" >
-			<input type="hidden" id="dong" name="dong" value="${dongCode}"/>
-			<input type="hidden" id="large" name="large" value="${largeCode}"/>
-		*/
+		//관심지역 이동
 		$(document).on("click", ".interested-region", function () {
-			let dCode = $(this).children('#dong').val();
-			let lCode = $(this).children('#large').val();
+			let dCode = $(this).parent().children('#dong').val();
+			let lCode = $(this).parent().children('#large').val();
 			location.href=`${root}/commerce?action=main&dong=\${dCode}&large=\${lCode}`;
 		});
 		
+		//inter-delete-Btn
+		$(document).on("click", ".inter-delete-Btn", function () {
+			let dCode = $(this).parent().prevAll('#dong').val();
+			let lCode = $(this).parent().prevAll('#large').val();
+			location.href=`${root}/interested?action=delete&dongCode=\${dCode}&largeCode=\${lCode}`;
+		});
 	}
 		 //맵 생성
 	var container = document.getElementById("kmap");
@@ -170,14 +172,15 @@ $(function () {
 			let largeName = cur['largeName'];
 	        let doCode = cur['dongCode'];
 			let lCode = cur['largeCode'];
+			console.log(`\${doCode}`);
 			
 			interestedList += `
-			<tr class="interested-region" >
+			<tr>
 				<input type="hidden" id="dong" name="dong" value="\${doCode}"/>
 				<input type="hidden" id="large" name="large" value="\${lCode}"/>
-			    <td>\${dongName}</td>
-			    <td>\${largeName}</td>
-			    <td><input type="button" class="checkBtn" value="클릭" /></td>
+			    <td class="interested-region">\${dongName}</td>
+			    <td class="interested-region">\${largeName}</td>
+			    <td><input type="button" class="inter-delete-Btn" value="삭제" /></td>
 			</tr>
 			`;
         }
