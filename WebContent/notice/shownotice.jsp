@@ -20,6 +20,7 @@
 	   	if(confirm("정말로 삭제??")) {
 	   		location.href = "${root}/notice?action=delete&articleno=" + no;
 	   	}
+	   }
  
         	
         	
