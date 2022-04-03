@@ -30,8 +30,6 @@ var markers = []; //마커 제거를 위해 현재 마커들 저장해놓음
 var storeData;
 var totalData = 0;
 
-var interestedJson;
-
 const countPerPage = 15;
 const naviSize = 10;
 
@@ -54,12 +52,10 @@ $(function () {
 			type: 'GET',
 			dataType: 'JSON',
 			success: function (response) {
-				interestedJson = response;
-				showInterestedList();
+				showInterestedList(response);
 			},
 			error : function () {
-				interestedJson = '';
-				showInterestedList();
+				showInterestedList('');
 			}
 		});
 		
@@ -77,16 +73,13 @@ $(function () {
 			let dName = $(this).parent().prevAll('#dongName').val();
 			let dCode = $(this).parent().prevAll('#dongCode').val();
 			let lCode = $(this).parent().prevAll('#largeCode').val();
-			/*
-			location.href=`${root}/interested?action=delete&dongName=\${dName}&dongCode=\${dCode}&largeCode=\${lCode}`;
-			*/
 
 			$.ajax({
 				url: '${root}/interested',
 				data: {
 					action : 'delete',
 					dongCode : dCode,
-					largeCode : lCode,
+					largeCode : lCode
 				},
 				type: 'GET',
 				success: function () {
@@ -108,42 +101,21 @@ $(function () {
 		let dongName = '${dongName}';
 		let dongCode = '${dongCode}';
 		let middleCode = $("option:selected", this).val();
-		
-		/*[중분류 변경하면 관심등록 버튼 생성하는 부분]
-		----------------------------------------------------
-		let tag =` 
-			<input type="hidden" name="action" value="regist">
-			<input type="hidden" name="dongCode" value="\${dongCode}">
-			<input type="hidden" name="middleCode" value="\${middleCode}">
-			<button type="button" id="interested-btn" class="ml-1 btn btn-outline-primary">관심지역 등록</button>
-			`;
-		$("#interested-form").empty().append(tag);
-		$(document).on("click", "#interested-btn", function () {
-			$("#interested-form").submit();
-		});
-		-------------------------------------------------------*/
 		let pg = 1;
 		getData(dongName, dongCode, middleCode, pg);
 	});
 	
 	
 	$(document).on("click", "#interested-btn", function () {
-		//$("#interested-form").submit();
-		/*
-		<form class="form-inline" id="interested-form" action="${root}/interested">
-			<input type="hidden" name="action" value="regist">
-			<input type="hidden" name="dongName" value="${dongName}">
-			<input type="hidden" name="dongCode" value="${dongCode}">
-			<input type="hidden" name="largeCode" value="${largeCode}">
-			<button type="button" id="interested-btn" class="ml-1 btn btn-outline-primary">관심지역 등록</button>
-		</form>
-		*/
+		let dongCode = '${dongCode}';
+		let largeCode = '${largeCode}';
+		
 		$.ajax({
 			url: '${root}/interested',
 			data: {
 				action : 'regist',
-				dongCode : ${dongCode},
-				largeCode : ${largeCode},
+				dongCode : dongCode,
+				largeCode : largeCode
 			},
 			type: 'GET',
 			success: function () {
@@ -208,9 +180,9 @@ $(function () {
 		});
 	}
 	
-	function showInterestedList(delDongCode, delLargeCode) {
+	function showInterestedList(data) {
 		let interestedList = '';
-		let list = interestedJson;
+		let list = data;
 		
 		for(let i = 0; i < list.length; i++) {
         	let cur = list[i];
@@ -222,11 +194,6 @@ $(function () {
 	        let doCode = cur['dongCode'];
 			let lCode = cur['largeCode'];
 			console.log('dongName: ' + dongName);
-			
-			if (delDongCode == doCode && delLargeCode == lCode) {
-				list[i] = '';
-				continue;
-			}
 			
 			interestedList += `
 			<tr>
@@ -447,7 +414,7 @@ $(function () {
 		</div>
 		<div>
 		<!-- 관심지역 등록버튼 -->
-			<button type="button" id="interested-btn" class="ml-1 btn btn-outline-primary">관심지역 등록</button>
+			<button type="button" id="interested-btn" name="interested-btn" class="ml-1 btn btn-outline-primary">관심지역 등록</button>
 		</div>
 		<div class="m-3 row justify-content-end">
            	<form class="form-inline" action="${root}/commerce">
