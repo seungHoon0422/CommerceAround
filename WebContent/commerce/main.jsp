@@ -107,6 +107,11 @@ $(function () {
 	
 	
 	$(document).on("click", "#interested-btn", function () {
+		if (!'${userInfo}') {
+			alert("로그인이 필요합니다.");
+			location.href = '${root}/member&action=movelogin';
+		}
+		
 		let dongCode = '${dongCode}';
 		let largeCode = '${largeCode}';
 		
@@ -149,6 +154,9 @@ $(function () {
 		makeList(curPageNo);
 		//2. 페이지 넘버, active변경(선택된 페이지넘버)
 		makePagingView(curPageNo);
+		//3. 스크롤 원래 위치로
+		let location = document.querySelector("#page-nav").offsetTop;
+		window.scrollTo(location, 0);
 	});
 	
 });
