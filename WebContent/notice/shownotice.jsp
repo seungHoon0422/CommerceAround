@@ -1,13 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" %>
 <%@ include file="/template/header.jsp" %>
-<c:if test="${empty memberInfo}">
-	<script>
-	alert("로그인 사용자만 볼 수 있는 페이지입니다.");
-	location.href = "${root}/member?action=movelogin";
-	</script>
-</c:if>
-<c:if test="${!empty memberInfo}">
+<c:set var="articleid" value="${article.userId }"/>
+<%-- <c:if test="${empty memberInfo}"> --%>
+<!-- 	<script> -->
+<!-- // 	alert("로그인 사용자만 볼 수 있는 페이지입니다."); -->
+<%-- // 	location.href = "${root}/member?action=movelogin"; --%>
+<!-- 	</script> -->
+<%-- </c:if> --%>
+<%-- <c:if test="${!empty memberInfo}"> --%>
     <style>
         mark.sky {
             background: linear-gradient(to top, #54fff9 20%, transparent 30%);
@@ -49,10 +50,14 @@
 		</div>
         <div class="text-center m-3">
         	<a href="${root}/notice?action=movenotice">목록</a>
+		<c:if test="${!empty memberInfo}">
+		<c:if test="${memberInfo.id eq articleid}">
         	<a href="${root}/notice?action=mvmodify&articleno=${article.articleNo}">수정</a>
         	<a href="javascript:deleteArticle(${article.articleNo});">삭제</a>
+		</c:if>
+		</c:if>
         </div>
 	</div>
 </div>
-</c:if>
+<%-- </c:if> --%>
 <%@ include file="/template/footer.jsp" %>

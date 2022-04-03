@@ -27,15 +27,15 @@
     <li class="nav-item">
       <a class="nav-link" href="${root}/notice?action=movenotice">공지사항</a>	
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">menu2</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">menu3</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">menu4</a>
-    </li>
+<!--     <li class="nav-item"> -->
+<!--       <a class="nav-link" href="#">menu2</a> -->
+<!--     </li> -->
+<!--     <li class="nav-item"> -->
+<!--       <a class="nav-link" href="#">menu3</a> -->
+<!--     </li> -->
+<!--     <li class="nav-item"> -->
+<!--       <a class="nav-link" href="#">menu4</a> -->
+<!--     </li> -->
   </ul>
   <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
     <ul class="navbar-nav">

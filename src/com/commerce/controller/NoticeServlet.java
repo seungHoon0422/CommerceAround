@@ -80,9 +80,9 @@ public class NoticeServlet extends HttpServlet {
 	}
 
 	private String showArticle(HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession();
-		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
-		if(memberDto != null) {
+//		HttpSession session = request.getSession();
+//		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
+//		if(memberDto != null) {
 			NoticeDto noticeDto = new NoticeDto();
 			try {
 				noticeDto = noticeService.getArticle(Integer.parseInt(request.getParameter("articleno")));
@@ -93,9 +93,9 @@ public class NoticeServlet extends HttpServlet {
 				request.setAttribute("msg", "글 수정중 에러가 발생했습니다.");
 				return "/error/error.jsp";
 			}
-		} else {			
-			return "/member?action=mvlogin";
-		}
+//		} else {			
+//			return "/member?action=mvlogin";
+//		}
 	}
 
 	private String deleteArticle(HttpServletRequest request, HttpServletResponse response) {
@@ -191,9 +191,9 @@ public class NoticeServlet extends HttpServlet {
 
 	private String moveList(HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("Move List");
-		HttpSession session = request.getSession();
-		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
-		if(memberDto != null) {
+//		HttpSession session = request.getSession();
+//		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
+//		if(memberDto != null) {
 			String pg = request.getParameter("pg");
 			String key = request.getParameter("key");
 			String word = request.getParameter("word");
@@ -212,8 +212,8 @@ public class NoticeServlet extends HttpServlet {
 				request.setAttribute("msg", "글목록 얻기중 에러가 발생했습니다.");
 				return "/error/error.jsp";
 			}
-		} else {			
-			return "/member?act=mvlogin";
-		}
+//		} else {			
+//			return "/member?act=mvlogin";
+//		}
 	}
 }
