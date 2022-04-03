@@ -25,7 +25,6 @@ public class MemberServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private MemberService memberService = MemberServiceImpl.getInstance();
-    private CommerceService commerceService = CommerceServiceImpl.getInstance();
 
     public MemberServlet() {
         super();
@@ -47,11 +46,8 @@ public class MemberServlet extends HttpServlet {
 	        // 아이디 유효성 체크
 	        int cnt = idCheck(request, response);
 	        response.getWriter().append(cnt + "");
-	        System.out.println("id check : "+cnt);
-//	        response.sendRedirect(root+path);
 	    } else if("movelogin".equals(action)) {
 	        // 로그인 화면으로 이동
-	        System.out.println("Move LoginPage");
 	        response.sendRedirect(root+"/member/login.jsp");
 	    } else if("login".equals(action)) {
 	        // 로그인 버튼 클릭
@@ -61,7 +57,6 @@ public class MemberServlet extends HttpServlet {
 	        path = logout(request, response);
 	        response.sendRedirect(root+path);
 	    } else if("movesignup".equals(action)) {
-	        System.out.println("move sing up page");
 	        response.sendRedirect(root+"/member/regist.jsp");
 	        // 회원가입 화면으로 이동
 	    } else if("register".equals(action)) {
@@ -142,11 +137,9 @@ public class MemberServlet extends HttpServlet {
         MemberDto memberDto = null;
         try {
             memberDto = memberService.login(id, password);
-            if(memberDto != null) System.out.println(memberDto.toString());
             HttpSession session = request.getSession();
             
             session.setAttribute("memberInfo", memberDto);
-            System.out.println(session.getAttribute("memberInfo").toString());
             String idsv = request.getParameter("idsave");
             if("saveok".equals(idsv)) { // 아이디 저장 체크
 //                Cookie setting
@@ -167,7 +160,6 @@ public class MemberServlet extends HttpServlet {
                 }
             }
             // 로그인 성공한 경우
-            System.out.println("Login Success");
             return "/index.jsp";
 
         } catch (InvalidFormException e) {

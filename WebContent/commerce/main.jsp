@@ -108,7 +108,7 @@ $(function () {
 	$(document).on("click", "#interested-btn", function () {
 		if (!'${userInfo}') {
 			alert("로그인이 필요합니다.");
-			location.href = '${root}/member&action=movelogin';
+			location.href = '${root}/member?action=movelogin';
 		}
 		
 		let dongCode = '${dongCode}';
@@ -138,16 +138,7 @@ $(function () {
 		getData(dongName, dongCode, middleCode, pg, key, word);
 	});
 	
-	/*
-	페이지 누르면 지도는 그대로, 표에 출력되는 데이터만 변경됨
-	즉 DB까지 갈 필요는 없음
-	중분류 선택해서 DB에서 JSON데이터 받아오면
-	그 데이터는 여기의 전역변수값으로 저장해두기
-	그리고 이후 페이징 요청, 그에 맞는 표 출력은 전역변수 데이터로 활용하기
-	페이징 넘버마다 클릭이벤트 생성 -> 페이지 넘버만큼 표출력 -> js반복문으로 li출력 -> 선택된 번호랑 같은값이면 active
-	*/
 	$(document).on("click", ".page-item", function () {
-		//버튼 눌리면
 		//1. 표 출력 변경 (선택된 페이지 넘버 필요)
 		let curPageNo = $(this).attr("data-pg");
 		makeList(curPageNo);
@@ -155,7 +146,7 @@ $(function () {
 		makePagingView(curPageNo);
 		//3. 스크롤 원래 위치로
 		let location = document.querySelector("#page-nav").offsetTop;
-		window.scrollTo(location, 0);
+		window.scrollTo(0, location);
 	});
 	
 });
@@ -223,20 +214,6 @@ $(function () {
 	}
 	
 	function makeList(curPageNo) {
-		/*
-		데이터는 서블릿에서 JSON으로 전부 받아오기
-		페이지에 맞는 데이터 10개(currentPerPage)
-		뿌리는 방법
-		=> 여기서 반복문 인덱스 조정해서 뿌리기
-		=> 필요한 정보
-			- 현재 페이지 -> 선택된거(active)
-			- countPerPage -> (얘네는 전역변수 설정?)
-			- naviSize 		 ->
-			- totalData -> data의 length가 될듯
-		=> 시작 인덱스 = (현재페이지  - 1) * curr
-		=> 종료 인덱스 = (현재페이지 - 1) * curr + naviSize (미만)
-			현재 2페이지 -> 10 ~ 19번
-		*/
 		let storeListInfo = '';
 		let startIdx = (curPageNo - 1) * countPerPage;
 		let endIdx = startIdx + naviSize;

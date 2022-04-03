@@ -87,7 +87,6 @@ public class CommerceServlet extends HttpServlet {
 		String dongName = request.getParameter("dongName");
 		String dongCode = request.getParameter("dongCode");
 		String largeCode = request.getParameter("largeCode");
-		System.out.println("[CK commerce main] : " + dongName + " " + dongCode + " " + largeCode);
 		request.setAttribute("dongName", dongName);
 		request.setAttribute("dongCode", dongCode);
 		request.setAttribute("largeCode", largeCode);

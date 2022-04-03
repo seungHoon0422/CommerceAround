@@ -33,8 +33,6 @@ public class NoticeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setCharacterEncoding("utf-8");
 		
-		System.out.println("Notice mapping");
-		
 		String action = request.getParameter("action");
 		if (action == null)
 			action = "movenotice";
@@ -144,7 +142,6 @@ public class NoticeServlet extends HttpServlet {
 		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
 		if(memberDto != null) {
 			int articleNo = Integer.parseInt(request.getParameter("articleno"));
-			System.out.println("article NO : " +articleNo);
 			try {
 				
 				 NoticeDto noticeDto = noticeService.getArticle(articleNo);
@@ -167,13 +164,11 @@ public class NoticeServlet extends HttpServlet {
 	private String registerNotice(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
-		System.out.println("register : "+memberDto.toString());
 		if(memberDto != null) {
 			NoticeDto noticeDto = new NoticeDto();
 			noticeDto.setUserId(memberDto.getId());
 			noticeDto.setSubject(request.getParameter("subject"));
 			noticeDto.setContent(request.getParameter("content"));
-			System.out.println(noticeDto.toString());
 			
 			try {
 				noticeService.registerArticle(noticeDto);
@@ -190,30 +185,22 @@ public class NoticeServlet extends HttpServlet {
 	}
 
 	private String moveList(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("Move List");
-//		HttpSession session = request.getSession();
-//		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
-//		if(memberDto != null) {
-			String pg = request.getParameter("pg");
-			String key = request.getParameter("key");
-			String word = request.getParameter("word");
-			try {
-				List<NoticeDto> list = noticeService.listArticle(pg, key, word);
-				PageNavigation navigation = noticeService.makePageNavigation(pg, key, word);
-				request.setAttribute("articles", list);
-				request.setAttribute("navi", navigation);
-				request.setAttribute("key", key);
-				request.setAttribute("word", word);
-				
-				System.out.println("path : "+"/notice/notice.jsp");
-				return "/notice/notice.jsp";
-			} catch (Exception e) {
-				e.printStackTrace();
-				request.setAttribute("msg", "글목록 얻기중 에러가 발생했습니다.");
-				return "/error/error.jsp";
-			}
-//		} else {			
-//			return "/member?act=mvlogin";
-//		}
+		String pg = request.getParameter("pg");
+		String key = request.getParameter("key");
+		String word = request.getParameter("word");
+		try {
+			List<NoticeDto> list = noticeService.listArticle(pg, key, word);
+			PageNavigation navigation = noticeService.makePageNavigation(pg, key, word);
+			request.setAttribute("articles", list);
+			request.setAttribute("navi", navigation);
+			request.setAttribute("key", key);
+			request.setAttribute("word", word);
+			
+			return "/notice/notice.jsp";
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("msg", "글목록 얻기중 에러가 발생했습니다.");
+			return "/error/error.jsp";
+		}
 	}
 }

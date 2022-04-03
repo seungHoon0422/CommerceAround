@@ -36,8 +36,6 @@ public class InterestedServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		
-		System.out.println("Interested mapping");
-		
 		HttpSession session = request.getSession();
 		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
 		if (memberDto == null) {
@@ -71,34 +69,12 @@ public class InterestedServlet extends HttpServlet {
 			break;
 		}
 	}
-	
-//	중분류로 관심지역 등록하던 코드
-//	private void registRegion(String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//
-//		String dongCode = request.getParameter("dongCode");
-//		String middleCode = request.getParameter("middleCode");
-//		String path = "/commerce?action=main" + "&dong=" + dongCode 
-//				+ "&large=" + middleCode.charAt(0);
-//		try {
-//			interestedService.registRegion(id, dongCode, middleCode);
-//		} catch (DuplicatedEntityException e) {
-//			e.printStackTrace();
-//			request.setAttribute("msg", "중복된 지역이 존재합니다.");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			request.setAttribute("msg", "관심지역 등록 중 에러가 발생했습니다.");
-//			path = "/error/error.jsp";
-//		}
-//		System.out.println("path: " + path);
-//		request.getRequestDispatcher(path).forward(request, response);
-//	}
 
 	//대분류로 관심지역 등록
 	private void registRegion(String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String dongCode = request.getParameter("dongCode");
 		String largeCode = request.getParameter("largeCode");
-		System.out.println("[ck reg] : " + dongCode + " " + largeCode);
 		String path = "/commerce/main.jsp";
 		try {
 			interestedService.registRegion(id, dongCode, largeCode);
