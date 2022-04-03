@@ -28,13 +28,13 @@ public class CommerceServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
 		doGet(request, response);
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		
 		String action = request.getParameter("action");
 		if (action == null)
@@ -84,8 +84,12 @@ public class CommerceServlet extends HttpServlet {
 	
 	private String moveMiddle(HttpServletRequest request) {
 		
-		request.setAttribute("dongCode", request.getParameter("dong"));
-		String largeCode = request.getParameter("large");
+		String dongName = request.getParameter("dongName");
+		String dongCode = request.getParameter("dongCode");
+		String largeCode = request.getParameter("largeCode");
+		System.out.println("[CK commerce main] : " + dongName + " " + dongCode + " " + largeCode);
+		request.setAttribute("dongName", dongName);
+		request.setAttribute("dongCode", dongCode);
 		request.setAttribute("largeCode", largeCode);
 		
 		try {
@@ -156,6 +160,7 @@ public class CommerceServlet extends HttpServlet {
 
 	protected String getMap(HttpServletRequest request) {
 		
+		String dongName = request.getParameter("dongName");
 		String dongCode = request.getParameter("dongCode");
 		String middleCode = request.getParameter("middleCode");
 		String pg = request.getParameter("pg");
@@ -165,7 +170,7 @@ public class CommerceServlet extends HttpServlet {
 		try {
 			//리스트 받아오는 서비스 객체
 			//페이지, key, word
-			List<CommerceDto> list = commerceService.getCommerceList(dongCode, middleCode, pg, key, word);
+			List<CommerceDto> list = commerceService.getCommerceList(dongName, dongCode, middleCode, pg, key, word);
 			Gson gson = new Gson();//자바객체를 JSON으로 변경해주는 객체(외부 jar파일 받았음)
 			String listJson = gson.toJson(list, List.class).toString();
 			return listJson;

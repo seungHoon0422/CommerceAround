@@ -74,7 +74,8 @@ public class CommerceDaoImpl implements CommerceDao {
 	public List<RegionDto> getDongList(String gugunCode) throws SQLException {
 		List<RegionDto> list = new ArrayList<RegionDto>();
 		
-		String sql = "SELECT * from dong where gugunCode = ?";
+		String sql = "SELECT * FROM dong WHERE gugunCode = ? "
+				+ "GROUP BY dongName ";
 		
 		try(Connection conn = dbutil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
@@ -136,7 +137,7 @@ public class CommerceDaoImpl implements CommerceDao {
 	}
 
 	@Override
-	public List<CommerceDto> getCommerceList(String dongCode, String middleCode, 
+	public List<CommerceDto> getCommerceList(String dongName, String dongCode, String middleCode, 
 			ListParamDto listParamDto) throws SQLException {
 		List<CommerceDto> list = new ArrayList<CommerceDto>();
 		
@@ -144,7 +145,11 @@ public class CommerceDaoImpl implements CommerceDao {
 		String word = listParamDto.getWord();
 		
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * from store where dongCode = ? and middleCode = ? ");
+		//dongCode와 앞의 5자리가 똑같고, dongName과 이름이 같은 지역 select!!
+		//dong테이블에서 dongName으로 검색 -> dongCodeList가 나옴 -> dongCode가 여기 속해야함
+		sql.append("SELECT * FROM store WHERE middleCode = ? ")
+		.append(" AND dongCode IN ")
+		.append("(SELECT dongCode FROM dong WHERE dongName = ? AND dongCode LIKE concat(?, '%'))");
 		//wort null -> 그대로, 아니면 쿼리 추가 ?에 key, word채워주기, limit도
 		try(Connection conn = dbutil.getConnection()) {
 			if (!word.isEmpty()) {
@@ -152,8 +157,9 @@ public class CommerceDaoImpl implements CommerceDao {
 			}
 			int idx = 1;
 			try (PreparedStatement pstmt = conn.prepareStatement(sql.toString())){
-				pstmt.setString(idx++, dongCode);
 				pstmt.setString(idx++, middleCode);
+				pstmt.setString(idx++, dongName);
+				pstmt.setString(idx++, dongCode.substring(0, 5));
 				if (!word.isEmpty()) {
 					pstmt.setString(idx++, word);
 				}

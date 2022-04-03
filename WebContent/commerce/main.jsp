@@ -30,8 +30,11 @@ var markers = []; //마커 제거를 위해 현재 마커들 저장해놓음
 var storeData;
 var totalData = 0;
 
+var interestedJson;
+
 const countPerPage = 15;
 const naviSize = 10;
+
 
 $(function () {
 	console.log("window loaded");
@@ -51,25 +54,45 @@ $(function () {
 			type: 'GET',
 			dataType: 'JSON',
 			success: function (response) {
-				showInterestedList(response);
+				interestedJson = response;
+				showInterestedList();
 			},
 			error : function () {
-				showInterestedList('');
+				interestedJson = '';
+				showInterestedList();
 			}
 		});
 		
 		//관심지역 이동
 		$(document).on("click", ".interested-region", function () {
-			let dCode = $(this).parent().children('#dong').val();
-			let lCode = $(this).parent().children('#large').val();
-			location.href=`${root}/commerce?action=main&dong=\${dCode}&large=\${lCode}`;
+			let dName = $(this).parent().children('#dongName').val();
+			let dCode = $(this).parent().children('#dongCode').val();
+			let lCode = $(this).parent().children('#largeCode').val();
+			location.href=`${root}/commerce?action=main&dongName=\${dName}&dongCode=\${dCode}&largeCode=\${lCode}`;
 		});
 		
 		//inter-delete-Btn
 		$(document).on("click", ".inter-delete-Btn", function () {
-			let dCode = $(this).parent().prevAll('#dong').val();
-			let lCode = $(this).parent().prevAll('#large').val();
-			location.href=`${root}/interested?action=delete&dongCode=\${dCode}&largeCode=\${lCode}`;
+			
+			let dName = $(this).parent().prevAll('#dongName').val();
+			let dCode = $(this).parent().prevAll('#dongCode').val();
+			let lCode = $(this).parent().prevAll('#largeCode').val();
+			/*
+			location.href=`${root}/interested?action=delete&dongName=\${dName}&dongCode=\${dCode}&largeCode=\${lCode}`;
+			*/
+
+			$.ajax({
+				url: '${root}/interested',
+				data: {
+					action : 'delete',
+					dongCode : dCode,
+					largeCode : lCode,
+				},
+				type: 'GET',
+				success: function () {
+					location.reload();
+				}
+			});
 		});
 	}
 		 //맵 생성
@@ -82,6 +105,7 @@ $(function () {
 	map = new kakao.maps.Map(container, options);
 	
 	$(document).on("change", "#middle", function () {
+		let dongName = '${dongName}';
 		let dongCode = '${dongCode}';
 		let middleCode = $("option:selected", this).val();
 		
@@ -99,21 +123,43 @@ $(function () {
 		});
 		-------------------------------------------------------*/
 		let pg = 1;
-		getData(dongCode, middleCode, pg);
+		getData(dongName, dongCode, middleCode, pg);
 	});
 	
 	
 	$(document).on("click", "#interested-btn", function () {
-		$("#interested-form").submit();
+		//$("#interested-form").submit();
+		/*
+		<form class="form-inline" id="interested-form" action="${root}/interested">
+			<input type="hidden" name="action" value="regist">
+			<input type="hidden" name="dongName" value="${dongName}">
+			<input type="hidden" name="dongCode" value="${dongCode}">
+			<input type="hidden" name="largeCode" value="${largeCode}">
+			<button type="button" id="interested-btn" class="ml-1 btn btn-outline-primary">관심지역 등록</button>
+		</form>
+		*/
+		$.ajax({
+			url: '${root}/interested',
+			data: {
+				action : 'regist',
+				dongCode : ${dongCode},
+				largeCode : ${largeCode},
+			},
+			type: 'GET',
+			success: function () {
+				location.reload();
+			}
+		});
 	});
 	
 	$(document).on("click", "#search-btn", function () {
+		let dongName = '${dongName}';
 		let dongCode = '${dongCode}';
 		let middleCode = $("option:selected", "#middle").val();
 		let pg = 1;
 		let key = $("option:selected", "#key").val();
 		let word = $("#word").val();
-		getData(dongCode, middleCode, pg, key, word);
+		getData(dongName, dongCode, middleCode, pg, key, word);
 	});
 	
 	/*
@@ -135,13 +181,14 @@ $(function () {
 	
 });
 		
-	function getData(dongCode, middleCode, pg, key, word) {
+	function getData(dongName, dongCode, middleCode, pg, key, word) {
 		$.ajax({
 			url: '${root}/commerce',
 			data: {
 				action : 'map',
-				middleCode : middleCode,
+				dongName : dongName,
 				dongCode : dongCode,
+				middleCode : middleCode,
 				pg : 1,
 				key : key,
 				word : word
@@ -161,23 +208,31 @@ $(function () {
 		});
 	}
 	
-	function showInterestedList(response) {
+	function showInterestedList(delDongCode, delLargeCode) {
 		let interestedList = '';
-		let list = response;
+		let list = interestedJson;
 		
 		for(let i = 0; i < list.length; i++) {
         	let cur = list[i];
+        	if (!cur)
+        		continue;
 
 	        let dongName = cur['dongName'];
 			let largeName = cur['largeName'];
 	        let doCode = cur['dongCode'];
 			let lCode = cur['largeCode'];
-			console.log(`\${doCode}`);
+			console.log('dongName: ' + dongName);
+			
+			if (delDongCode == doCode && delLargeCode == lCode) {
+				list[i] = '';
+				continue;
+			}
 			
 			interestedList += `
 			<tr>
-				<input type="hidden" id="dong" name="dong" value="\${doCode}"/>
-				<input type="hidden" id="large" name="large" value="\${lCode}"/>
+				<input type="hidden" id="dongName" name="dongName" value="\${dongName}"/>
+				<input type="hidden" id="dongCode" name="dongCode" value="\${doCode}"/>
+				<input type="hidden" id="largeCode" name="largeCode" value="\${lCode}"/>
 			    <td class="interested-region">\${dongName}</td>
 			    <td class="interested-region">\${largeName}</td>
 			    <td><input type="button" class="inter-delete-Btn" value="삭제" /></td>
@@ -392,12 +447,7 @@ $(function () {
 		</div>
 		<div>
 		<!-- 관심지역 등록버튼 -->
-			<form class="form-inline" id="interested-form" action="${root}/interested">
-				<input type="hidden" name="action" value="regist">
-				<input type="hidden" name="dongCode" value="${dongCode}">
-				<input type="hidden" name="largeCode" value="${largeCode}">
-				<button type="button" id="interested-btn" class="ml-1 btn btn-outline-primary">관심지역 등록</button>
-			</form>
+			<button type="button" id="interested-btn" class="ml-1 btn btn-outline-primary">관심지역 등록</button>
 		</div>
 		<div class="m-3 row justify-content-end">
            	<form class="form-inline" action="${root}/commerce">

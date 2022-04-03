@@ -26,6 +26,6 @@ public interface CommerceDao {
 	List<CategoryDto> getMiddleList(String largeCode) throws SQLException;
 	
 	/** 상권 리스트 */
-	List<CommerceDto> getCommerceList(String dongCode, String middleCode,
+	List<CommerceDto> getCommerceList(String dongName, String dongCode, String middleCode,
 			ListParamDto listParamDto) throws SQLException;
 }

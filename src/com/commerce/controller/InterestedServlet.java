@@ -28,13 +28,13 @@ public class InterestedServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
 		doGet(request, response);
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setCharacterEncoding("utf-8");
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		
 		System.out.println("Interested mapping");
 		
@@ -98,11 +98,11 @@ public class InterestedServlet extends HttpServlet {
 
 		String dongCode = request.getParameter("dongCode");
 		String largeCode = request.getParameter("largeCode");
-		String path = "/commerce?action=main" + "&dong=" + dongCode 
-				+ "&large=" + largeCode;
-
+		System.out.println("[ck reg] : " + dongCode + " " + largeCode);
+		String path = "/commerce/main.jsp";
 		try {
 			interestedService.registRegion(id, dongCode, largeCode);
+			return;
 		} catch (DuplicatedEntityException e) {
 			e.printStackTrace();
 			request.setAttribute("msg", "중복된 지역이 존재합니다.");
@@ -111,7 +111,6 @@ public class InterestedServlet extends HttpServlet {
 			request.setAttribute("msg", "관심지역 등록 중 에러가 발생했습니다.");
 			path = "/error/error.jsp";
 		}
-		System.out.println("path: " + path);
 		request.getRequestDispatcher(path).forward(request, response);
 	}
 	
@@ -119,11 +118,11 @@ public class InterestedServlet extends HttpServlet {
 
 		String dongCode = request.getParameter("dongCode");
 		String largeCode = request.getParameter("largeCode");
-		String path = "/commerce?action=main&dong=" + dongCode
-				+ "&large=" + largeCode;
-
+		String path = "/commerce/main.jsp";
+		
 		try {
 			interestedService.deleteInterestedRegion(id, dongCode, largeCode);
+			return;
 		} catch (NotFoundEntityException e) {
 			e.printStackTrace();
 			request.setAttribute("msg", "삭제할 지역이 없습니다.");
@@ -137,10 +136,12 @@ public class InterestedServlet extends HttpServlet {
 
 	private void listRegion(String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String dongName = request.getParameter("dongName");
 		String dongCode = request.getParameter("dongCode");
 		String largeCode = request.getParameter("largeCode");
-		String path = "/commerce?action=main" + "&dong=" + dongCode 
-				+ "&large=" + largeCode;
+		String path = "/commerce?action=main" + "&dongName=" + dongName
+				+ "&dongCode=" + dongCode 
+				+ "&largeCode=" + largeCode;
 		
 		try {
 			List<InterestedVo> list = interestedService.getInterestedRegionList(id);
