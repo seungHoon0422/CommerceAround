@@ -53,7 +53,7 @@ public class CommerceServiceImpl implements CommerceService {
 	}
 	
 	@Override
-	public List<CommerceDto> getCommerceList(String dongCode, String middleCode, String pg,
+	public List<CommerceDto> getCommerceList(String dongName, String dongCode, String middleCode, String pg,
 			String key, String word) throws SQLException {
 		//key~~ 유효성체크, dto, dao ->
 		int pgno = pg.isEmpty() ? 1 : Integer.parseInt(pg);
@@ -68,6 +68,6 @@ public class CommerceServiceImpl implements CommerceService {
 		listParamDto.setStart((pgno - 1) / countPerPage);
 		listParamDto.setCountPerPage(countPerPage);
 		
-		return commerceDao.getCommerceList(dongCode, middleCode, listParamDto);
+		return commerceDao.getCommerceList(dongName, dongCode, middleCode, listParamDto);
 	}
 }

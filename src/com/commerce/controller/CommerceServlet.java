@@ -28,13 +28,13 @@ public class CommerceServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
 		doGet(request, response);
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		
 		String action = request.getParameter("action");
 		if (action == null)
@@ -45,9 +45,6 @@ public class CommerceServlet extends HttpServlet {
 		switch (action) {
 		case "main":
 			path = moveMiddle(request);
-			System.out.println("F4");
-			System.out.println("realPath: " + path);
-			//왜 여기서 Dispatcher가 안되지??
 			request.getRequestDispatcher(path).forward(request, response);
 			break;
 		case "map":
@@ -87,23 +84,22 @@ public class CommerceServlet extends HttpServlet {
 	
 	private String moveMiddle(HttpServletRequest request) {
 		
-		request.setAttribute("dongCode", request.getParameter("dong"));
-		String largeCode = request.getParameter("large");
-		
-		System.out.println(request.getAttribute("dongCode") + " " + largeCode);
+		String dongName = request.getParameter("dongName");
+		String dongCode = request.getParameter("dongCode");
+		String largeCode = request.getParameter("largeCode");
+		request.setAttribute("dongName", dongName);
+		request.setAttribute("dongCode", dongCode);
+		request.setAttribute("largeCode", largeCode);
 		
 		try {
 			List<CategoryDto> middleList = commerceService.getMiddleList(largeCode);
 			request.setAttribute("middleList", middleList);
-			System.out.println("F3");
 			return "/commerce/main.jsp";
 			
 		} catch (SQLException e) {
 			// middle list 못받아온 경우
 			e.printStackTrace();
-			System.out.println("F1");
 		}
-		System.out.println("F2");
 		return null;
 	}
 
@@ -138,8 +134,8 @@ public class CommerceServlet extends HttpServlet {
 	private String getGugunList(HttpServletRequest request) {
 		try {
 			String regCode = request.getParameter("code");
-			System.out.println("code: " + regCode);
 			List<RegionDto> list = commerceService.getGugunList(regCode);
+			
 			Gson gson = new Gson();//자바객체를 JSON으로 변경해주는 객체(외부 jar파일 받았음)
 			String listJson = gson.toJson(list, List.class).toString();
 			return listJson;
@@ -163,6 +159,7 @@ public class CommerceServlet extends HttpServlet {
 
 	protected String getMap(HttpServletRequest request) {
 		
+		String dongName = request.getParameter("dongName");
 		String dongCode = request.getParameter("dongCode");
 		String middleCode = request.getParameter("middleCode");
 		String pg = request.getParameter("pg");
@@ -172,7 +169,7 @@ public class CommerceServlet extends HttpServlet {
 		try {
 			//리스트 받아오는 서비스 객체
 			//페이지, key, word
-			List<CommerceDto> list = commerceService.getCommerceList(dongCode, middleCode, pg, key, word);
+			List<CommerceDto> list = commerceService.getCommerceList(dongName, dongCode, middleCode, pg, key, word);
 			Gson gson = new Gson();//자바객체를 JSON으로 변경해주는 객체(외부 jar파일 받았음)
 			String listJson = gson.toJson(list, List.class).toString();
 			return listJson;

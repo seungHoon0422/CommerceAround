@@ -70,9 +70,10 @@ $(function () {
 			$("#largeRow").append(code);
 			$(".btn").each(function(index, element) {
 				$(this).on("click", function() {
-					let dongcode = $("#dong option:selected").val();
-					let largecode = $(this).val();
-					location.href = "${root}/commerce?action=main&dong="+dongcode+"&large="+largecode;
+					let dongCode = $("#dong option:selected").val();
+					let dongName = $("#dong option:selected").text();
+					let largeCode = $(this).val();
+					location.href = "${root}/commerce?action=main&dongCode="+dongCode+"&dongName="+dongName+"&largeCode="+largeCode;
 				});
 			});
 		},

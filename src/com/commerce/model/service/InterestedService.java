@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.commerce.model.InterestedDto;
+import com.commerce.model.InterestedVo;
 import com.commerce.model.util.exception.DuplicatedEntityException;
 import com.commerce.model.util.exception.InvalidFormException;
 import com.commerce.model.util.exception.NotFoundEntityException;
@@ -11,7 +12,7 @@ import com.commerce.model.util.exception.NotFoundEntityException;
 public interface InterestedService {
 	
 	/** 관심지역 리스트 */
-	List<InterestedDto> getInterestedRegionList(String id)
+	List<InterestedVo> getInterestedRegionList(String id)
 			throws SQLException, NotFoundEntityException, InvalidFormException;
 	
 	/** 해당 관심지역 */
@@ -19,10 +20,10 @@ public interface InterestedService {
 			throws SQLException, NotFoundEntityException, InvalidFormException;
 	
 	/** 관심지역 등록 */
-	void registRegion(String id, String dongCode, String middleCode) throws SQLException, InvalidFormException, DuplicatedEntityException;
+	void registRegion(String id, String dongCode, String largeCode) throws SQLException, InvalidFormException, DuplicatedEntityException;
 	
 	/** 관심지역 삭제 */
-	void deleteInterestedRegion(String id, String dongCode, String middleCode)
+	void deleteInterestedRegion(String id, String dongCode, String largeCode)
 			throws SQLException, InvalidFormException, NotFoundEntityException;
 }
 

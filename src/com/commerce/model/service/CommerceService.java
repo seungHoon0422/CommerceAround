@@ -25,6 +25,6 @@ public interface CommerceService {
 	List<CategoryDto> getMiddleList(String largeCode) throws SQLException;
 	
 	/** 상권 리스트 */
-	List<CommerceDto> getCommerceList(String dongCode, String middleCode, String pg,
+	List<CommerceDto> getCommerceList(String dongName, String dongCode, String middleCode, String pg,
 			String key, String word) throws SQLException;
 }

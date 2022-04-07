@@ -4,13 +4,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.commerce.model.InterestedDto;
+import com.commerce.model.InterestedVo;
 import com.commerce.model.util.exception.DuplicatedEntityException;
 import com.commerce.model.util.exception.NotFoundEntityException;
 
 public interface InterestedDao {
 	
 	/** 관심지역 리스트 */
-	List<InterestedDto> getInterestedRegionList(String id) throws SQLException;
+	List<InterestedVo> getInterestedRegionList(String id) throws SQLException;
 	
 	/** 해당 관심지역 */
 	public InterestedDto getInterestedRegion(InterestedDto interestedDto)

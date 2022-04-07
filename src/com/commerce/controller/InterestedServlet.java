@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.commerce.model.InterestedDto;
+import com.commerce.model.InterestedVo;
 import com.commerce.model.MemberDto;
 import com.commerce.model.service.InterestedService;
 import com.commerce.model.service.InterestedServiceImpl;
 import com.commerce.model.util.exception.DuplicatedEntityException;
 import com.commerce.model.util.exception.NotFoundEntityException;
+import com.google.gson.Gson;
 
 @WebServlet("/interested")
 public class InterestedServlet extends HttpServlet {
@@ -27,15 +28,13 @@ public class InterestedServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
 		doGet(request, response);
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setCharacterEncoding("utf-8");
-		
-		System.out.println("Interested mapping");
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		
 		HttpSession session = request.getSession();
 		MemberDto memberDto = (MemberDto) session.getAttribute("memberInfo");
@@ -71,44 +70,41 @@ public class InterestedServlet extends HttpServlet {
 		}
 	}
 
+	//대분류로 관심지역 등록
 	private void registRegion(String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String dongCode = request.getParameter("dongCode");
-		String middleCode = request.getParameter("middleCode");
-		String path = "/commerce?action=main";
-		
+		String largeCode = request.getParameter("largeCode");
+		String path = "/commerce/main.jsp";
 		try {
-			interestedService.registRegion(id, dongCode, middleCode);
-			response.sendRedirect(root + path);
+			interestedService.registRegion(id, dongCode, largeCode);
 			return;
 		} catch (DuplicatedEntityException e) {
 			e.printStackTrace();
 			request.setAttribute("msg", "중복된 지역이 존재합니다.");
-			path += "&dong=" + dongCode + "&large=" + middleCode.charAt(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			request.setAttribute("msg", "관심지역 등록 중 에러가 발생했습니다.");
 			path = "/error/error.jsp";
 		}
-		System.out.println("path: " + path);
 		request.getRequestDispatcher(path).forward(request, response);
 	}
 	
 	private void deleteRegion(String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String dongCode = request.getParameter("dongCode");
-		String middleCode = request.getParameter("middleCode");
-		String path = "/commerce?action=main&dongCode=" + dongCode + "&largeCode=" + middleCode.charAt(0);
+		String largeCode = request.getParameter("largeCode");
+		String path = "/commerce/main.jsp";
 		
 		try {
-			interestedService.deleteInterestedRegion(id, dongCode, middleCode);
-			response.sendRedirect(root + path);
+			interestedService.deleteInterestedRegion(id, dongCode, largeCode);
+			return;
 		} catch (NotFoundEntityException e) {
 			e.printStackTrace();
 			request.setAttribute("msg", "삭제할 지역이 없습니다.");
 		} catch (Exception e) {
 			e.printStackTrace();
-			request.setAttribute("msg", "관심지역 등록 중 에러가 발생했습니다.");
+			request.setAttribute("msg", "관심지역 삭제 중 에러가 발생했습니다.");
 			path = "/error/error.jsp";
 		}
 		request.getRequestDispatcher(path).forward(request, response);
@@ -116,11 +112,20 @@ public class InterestedServlet extends HttpServlet {
 
 	private void listRegion(String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String path = "";//관심지역 페이지 url로 변경!!
+		String dongName = request.getParameter("dongName");
+		String dongCode = request.getParameter("dongCode");
+		String largeCode = request.getParameter("largeCode");
+		String path = "/commerce?action=main" + "&dongName=" + dongName
+				+ "&dongCode=" + dongCode 
+				+ "&largeCode=" + largeCode;
 		
 		try {
-			List<InterestedDto> list = interestedService.getInterestedRegionList(id);
+			List<InterestedVo> list = interestedService.getInterestedRegionList(id);
 			request.setAttribute("interestedList", list);
+			Gson gson = new Gson();
+			String listJson = gson.toJson(list, List.class).toString();
+			response.getWriter().append(listJson);
+			return;
 		} catch (NotFoundEntityException e) {
 			e.printStackTrace();
 			request.setAttribute("msg", "관심 지역이 없습니다.");
